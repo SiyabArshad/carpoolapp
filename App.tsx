@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 // navigation
 import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BottomTabBarProps, BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 // svg
@@ -17,66 +18,91 @@ import Svg, { Path } from 'react-native-svg'
 import Animated, { useAnimatedStyle, withTiming, useDerivedValue } from 'react-native-reanimated'
 // lottie
 import Lottie from 'lottie-react-native'
-
 // ------------------------------------------------------------------
-
+//screens
+import Header from './App/components/Header';
+import Login from './App/screens/Login';
+import Forgot from './App/screens/Forgot';
+import SignupScreen from './App/screens/SignupScreen';
+import CarpoolForm from './App/screens/CarpoolForm';
+import ChatScreen from './App/screens/ChatArea';
+import NotificationPage from './App/screens/Notification';
+import UserProfile from './App/screens/Profile';
+import CarpoolActivitis from './App/screens/CarpoolActivitis';
+import Color from './App/Color';
+import { LogBox } from 'react-native';
+//-------
 const Tab = createBottomTabNavigator()
-
+const Stack = createNativeStackNavigator();
 const AnimatedSvg = Animated.createAnimatedComponent(Svg)
 
 // ------------------------------------------------------------------
 
 const App = () => {
   return (
-    <>
-      <StatusBar barStyle="light-content" />
-      <NavigationContainer>
-        <Tab.Navigator
-          tabBar={(props) => <AnimatedTabBar {...props} />}
-        >
-          <Tab.Screen
-            name="Home"
-            options={{
-              // @ts-ignore
-              tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/home.icon.json')} style={styles.icon} />,
-            }}
-            component={PlaceholderScreen}
-          />
-          <Tab.Screen
-            name="Upload"
-            options={{
-              // @ts-ignore
-              tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/upload.icon.json')} style={styles.icon} />,
-            }}
-            component={PlaceholderScreen}
-          />
-          <Tab.Screen
-            name="Chat"
-            options={{
-              // @ts-ignore
-              tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/chat.icon.json')} style={styles.icon} />,
-            }}
-            component={PlaceholderScreen}
-          />
-          <Tab.Screen
-            name="Settings"
-            options={{
-              // @ts-ignore
-              tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/settings.icon.json')} style={styles.icon} />,
-            }}
-            component={PlaceholderScreen}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </>
+    <NavigationContainer >
+    {/* <SafeAreaView style={styles.container}> */}
+    <Stack.Navigator initialroute="login" screenOptions={{headerShown:false}} >
+      <Stack.Screen name="login" component={Login} />
+      <Stack.Screen name="forget" component={Forgot}  />
+      <Stack.Screen name='signup' component={SignupScreen}/>
+      <Stack.Screen name='livechat' component={ChatScreen}/>
+      <Stack.Screen name="carpoolform" component={AnimatedTabNav} />
+    </Stack.Navigator>
+    {/* </SafeAreaView> */}
+    </NavigationContainer>
   )
 }
 
+
+
+//Tab nav
+
+const AnimatedTabNav=()=>(
+  <Tab.Navigator
+  screenOptions={{headerShown:false}}
+  tabBar={(props) => <AnimatedTabBar {...props} />}
+>
+  <Tab.Screen
+    name="Home"
+    options={{
+      // @ts-ignore
+      tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/activity.icon.json')} style={{height:60,width:60}} />,
+    }}
+    component={CarpoolActivitis}
+  />
+  <Tab.Screen
+    name="Upload"
+    options={{
+      // @ts-ignore
+      tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/notification.icon.json')} style={{height:60,width:60}} />,
+    }}
+    component={NotificationPage}
+  />
+  <Tab.Screen
+    name="Chat"
+    options={{
+      // @ts-ignore
+      tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/edit.icon.json')} style={styles.icon} />,
+    }}
+    component={CarpoolForm}
+  />
+  
+  <Tab.Screen
+    name="Settings"
+    options={{
+      // @ts-ignore
+      tabBarIcon: ({ ref }) => <Lottie ref={ref} loop={false} source={require('./src/assets/lottie/settings.icon.json')} style={styles.icon} />,
+    }}
+    component={UserProfile}
+  />
+</Tab.Navigator>
+)
 // ------------------------------------------------------------------
 
 const PlaceholderScreen = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: '#604AE6' }} />
+    <View style={{ flex: 1, backgroundColor: Color.primary }} />
   )
 }
 
@@ -93,8 +119,6 @@ const AnimatedTabBar = ({ state: { index: activeIndex, routes }, navigation, des
   }
 
   const [layout, dispatch] = useReducer(reducer, [])
-  console.log(layout)
-
   const handleLayout = (event: LayoutChangeEvent, index: number) => {
     dispatch({ x: event.nativeEvent.layout.x, index })
   }
@@ -130,7 +154,7 @@ const AnimatedTabBar = ({ state: { index: activeIndex, routes }, navigation, des
         style={[styles.activeBackground, animatedStyles]}
       >
         <Path
-          fill="#604AE6"
+          fill={Color.primary}
           d="M20 0H0c11.046 0 20 8.953 20 20v5c0 19.33 15.67 35 35 35s35-15.67 35-35v-5c0-11.045 8.954-20 20-20H20z"
         />
       </AnimatedSvg>
@@ -241,6 +265,7 @@ const styles = StyleSheet.create({
   icon: {
     height: 36,
     width: 36,
+    color:"red"
   }
 })
 
